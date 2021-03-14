@@ -1,21 +1,22 @@
-.DEFAULT_GOAL := all
+dir:
+	mkdir -p bin
 
-sistema.o: sistema.cpp sistema.h
-	g++ sistema.cpp -c
+bin/sistema.o: src/sistema.cpp
+	g++ src/sistema.cpp -Iinclude -O0 -fsanitize=address -g -Wall -ansi -pedantic -std=c++11 -c -o bin/sistema.o
 
-executor.o: executor.cpp executor.h sistema.o
-	g++ executor.cpp -c
+bin/executor.o: src/executor.cpp bin/sistema.o
+	g++ src/executor.cpp -Iinclude -O0 -fsanitize=address -g -Wall -ansi -pedantic -std=c++11 -c -o bin/executor.o
 
-usuario.o: usuario.cpp usuario.h
-	g++ usuario.cpp -c
+bin/usuario.o: usuario.cpp usuario.h
+	g++ src/usuario.cpp -Iinclude -O0 -fsanitize=address -g -Wall -ansi -pedantic -std=c++11 -c -o bin/usuario.o
 
-objects: sistema.o executor.o
+objects: bin/sistema.o bin/executor.o
 
-concordo: objects concordo.cpp
-	g++ -Wall -fsanitize=address sistema.o executor.o concordo.cpp -o concordo
+concordo: dir objects src/concordo.cpp
+	g++ -Wall -Iinclude -O0 -fsanitize=address bin/sistema.o bin/executor.o src/concordo.cpp -o concordo
 
 clean:
-	rm *.o concordo
+	rm -rf bin *.o concordo
 
 all: concordo
 
