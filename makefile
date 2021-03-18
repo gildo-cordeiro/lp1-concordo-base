@@ -45,6 +45,6 @@ $(OBJFOLDER):
 	@ mkdir $(OBJFOLDER)
 
 clean: $(OBJFOLDER)
-	@ del /f /s /q bin\*.o $(FILE) >nul
+	@ rm -rf bin/*.o $(FILE)
 
 .PHONY: all clean
