@@ -12,7 +12,7 @@ class Mensagem{
 
     public:
         Mensagem();
-        Mensagem();
+        ~Mensagem();
 };
 
 

@@ -10,7 +10,7 @@ class Canal{
 
     public:
         Canal();
-        Canal();
+        ~Canal();
 };
 
 #endif

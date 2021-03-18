@@ -7,23 +7,68 @@ using namespace std;
 
 /* COMANDOS */
 string Sistema::quit() {
-  return "Saindo...";
+  return "Saindo do Concordo";
 }
 
 string Sistema::create_user (const string email, const string senha, const string nome) {
-  return "create_user NÃO IMPLEMENTADO";
+  if(nome != "" && email != "" && senha != ""){
+    if(usuarioLogadoId != 0){
+      msg = "Usuario logado";
+    }else{
+      for(auto &usuario : usuarios){
+        if(usuario.getEmail() == email)
+          msg = "Usuário já existe!";
+      }
+
+      qtd_usuarios++;
+      Usuario user(qtd_usuarios, nome, email, senha);
+
+      usuarios.push_back(user);
+      msg = "Usuário criado";
+    }
+  }else{
+    msg = "Informe os parametros corretos para utilizar o comando.";
+  }
+
+  return msg;
 }
 
 string Sistema::login(const string email, const string senha) {
-
-  return "login NÃO IMPLEMENTADO";
+  if(email != "" && senha != ""){
+    for(auto &usuario: usuarios){
+      if(usuario.getEmail() == email && usuario.getSenha() == senha){
+        msg = "Usuario " + usuario.getNome() + "("+usuario.getEmail()+")" +" logado com sucesso";
+        usuarioLogadoId = usuario.getId();
+      }else  
+        msg = "Usuario não encontrado.";
+    }
+  }else{
+    msg = "Senha ou usuário inválidos!";
+  }
+  return msg;
 }
 
 string Sistema::disconnect() {
-  return "disconnect NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &usuario : usuarios){
+      if(usuario.getId() == usuarioLogadoId){
+          msg = "Desconectando usuário " + usuario.getEmail();
+          break;
+      }
+    }
+    usuarioLogadoId = 0;    
+  }else{
+    msg = "Não está conectado";
+  }
+  return msg;
 }
 
 string Sistema::create_server(const string nome) {
+  if(usuarioLogadoId != 0){
+    
+  }else{
+    msg = "É preciso estar logado para criar um servidor"; 
+  }
   return "create_server NÃO IMPLEMENTADO";
 }
 

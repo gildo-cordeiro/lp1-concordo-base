@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "servidor.hpp"
+#include "usuario.hpp"
 
 using namespace std;
 
@@ -11,9 +13,12 @@ class Sistema {
   private:
     //precisa guardar uma coleção de servidores;
     //precisa guardar uma coleção de usuários;
-    int usuarioLogadoId; // se 0: não logado, caso contrário guarda o id do usuário logado
+    int usuarioLogadoId = 0, qtd_usuarios = 0; // se 0: não logado, caso contrário guarda o id do usuário logado
     string nomeServidorConectado;
     string nomeCanalConectado;
+    vector<Servidor> servidores;
+    vector<Usuario> usuarios;
+    string msg = "";
 
   public:
 
