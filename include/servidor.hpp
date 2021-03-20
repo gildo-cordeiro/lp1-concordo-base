@@ -18,7 +18,20 @@ class Servidor{
             
     public:
         Servidor();
+        Servidor(string nome, int idUser);
         ~Servidor();
-};
+
+        int getIdUser();
+        string getNome();
+        string getDescricao();
+        string getCodigoConvite();
+        vector<Canal> getCanais();
+        vector<int> getParticipantesIDs();
+
+        void setCodigoConvite(string codigo);
+        void setDescricao(string desc);
+        void addCanais(vector<Canal> canais);
+        void addParticipante(int p);
+};      
 
 #endif

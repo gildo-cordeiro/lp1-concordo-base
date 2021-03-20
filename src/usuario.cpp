@@ -34,3 +34,11 @@ bool Usuario::getAtivo(){
 void Usuario::setAtivo(bool ativo){
     this->ativo = ativo;
 }
+
+void Usuario::addServer(Servidor* servidor){
+    this->servidor = servidor;
+}
+
+Servidor* Usuario::getServer(){
+    return servidor;
+}

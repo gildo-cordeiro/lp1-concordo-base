@@ -2,6 +2,7 @@
 #define USUARIO_H
 
 #include <istream>
+#include "servidor.hpp"
 using namespace std;
 
 class Usuario{
@@ -10,6 +11,7 @@ class Usuario{
         string nome;
         string email;
         string senha;
+        Servidor *servidor = nullptr;
         bool ativo;
 
     public:
@@ -20,6 +22,8 @@ class Usuario{
         string getNome();
         string getEmail();
         string getSenha();
+        void addServer(Servidor *s);
+        Servidor* getServer();
         void setAtivo(bool ativo);
         bool getAtivo();
         int getId();

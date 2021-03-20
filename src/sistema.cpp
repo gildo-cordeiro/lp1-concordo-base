@@ -65,39 +65,172 @@ string Sistema::disconnect() {
 
 string Sistema::create_server(const string nome) {
   if(usuarioLogadoId != 0){
+    for (auto &servidor : servidores){
+      if(servidor.getNome() == nome)
+        msg = "Servidor com esse nome já existe";
+    }
+
+    Servidor server(nome, usuarioLogadoId);
+    servidores.push_back(server);
+    msg = "Servidor criado";
     
   }else{
     msg = "É preciso estar logado para criar um servidor"; 
   }
-  return "create_server NÃO IMPLEMENTADO";
+  return msg;
 }
 
 string Sistema::set_server_desc(const string nome, const string descricao) {
-  return "set_server_desc NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &s: servidores){
+      if(s.getNome() == nome){
+        if(s.getIdUser() == usuarioLogadoId){
+          s.setDescricao(descricao);
+          msg = "Descrição do servidor '" +s.getNome()+ "' modificada!";
+        
+        }else{
+          msg = "Você não pode alterar a descrição de um servidor que não foi criado por você";
+        }
+      }else{
+        msg = "Servidor '"+ nome +"'  não existe";
+      }
+    }    
+  }else{
+    msg = "É preciso estar logado para criar um servidor"; 
+  }
+  return msg;
 }
 
 string Sistema::set_server_invite_code(const string nome, const string codigo) {
-  return "set_server_invite_code NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &s: servidores){
+      if(s.getNome() == nome){
+        if(s.getIdUser() == usuarioLogadoId){
+          s.setCodigoConvite(codigo);
+          codigo != "" 
+            ? msg = "Código de convite do servidor '" +s.getNome()+ "' modificado!"
+            : msg = "Código de convite do servidor '" +s.getNome()+ "' removido!";
+        
+        }else{
+          msg = "Você não pode alterar a descrição de um servidor que não foi criado por você";
+        }
+      }else{
+        msg = "Servidor '"+ nome +"'  não existe";
+      }
+    }    
+  }else{
+    msg = "É preciso estar logado para criar um servidor"; 
+  }
+  return msg;
 }
 
 string Sistema::list_servers() {
-  return "list_servers NÃO IMPLEMENTADO";
+  string msg_completa = "";
+  if(usuarioLogadoId != 0){
+    if(servidores.empty())
+      msg = "Não há servidores cadastrados";
+    else{
+      msg_completa += "Lista de Servidores\n";
+      for (auto &servidor : servidores){
+        msg_completa += 
+          "Nome: " + servidor.getNome() + 
+          "\nDescrição: " + servidor.getDescricao() + 
+          "\nCodigo: " + 
+          servidor.getCodigoConvite() != "" 
+              ? "Servidore Fechado" 
+              : "Servidor Aberto";
+            
+        msg_completa += "\n----------------------------------------\n";
+        cout << servidor.getDescricao() << endl;
+      } 
+      msg = msg_completa;     
+    }
+  }else{
+    msg = "É preciso estar logado para listar servidores"; 
+  }
+  return msg;
 }
 
 string Sistema::remove_server(const string nome) {
-  return "remove_server NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    if(servidores.empty())
+      msg = "Não há servidores cadastrados";
+    else{
+      for(auto s = servidores.begin(); s != servidores.end(); ++s){
+        if(s->getNome() == nome){
+          if(s->getIdUser() == usuarioLogadoId){
+            servidores.erase(s);
+            msg = "Servidor '"+nome+"' removido";
+          }else{
+            msg = "Você não é o dono do servidor "+nome;
+          }
+        }else{
+          msg = "Servidor '"+nome+"' não encontrado";
+        }
+      }
+    }
+  }else{
+    msg = "É preciso estar logado para remover um servidor"; 
+  }
+  return msg;
 }
 
 string Sistema::enter_server(const string nome, const string codigo) {
-  return "enter_server NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &s : servidores){
+      if(s.getNome() == nome){
+        if(usuarioLogadoId == s.getIdUser()){
+				  s.addParticipante(usuarioLogadoId);
+				  usuarios[usuarioLogadoId-1].addServer(&s);
+				  msg = "Entrou no servidor com sucesso";
+			  }else {
+          for (auto p : s.getParticipantesIDs()){
+              if(p == usuarioLogadoId)
+                msg = "Você ja esta neste servidor";
+          }
+				
+          if(s.getCodigoConvite() == "" || s.getCodigoConvite() == codigo){
+            s.addParticipante(usuarioLogadoId);
+            usuarios[usuarioLogadoId-1].addServer(&s);
+            msg = "Entrou no servidor com sucesso";
+          }else if(s.getCodigoConvite() != "" && codigo == ""){
+            msg = "Servidor requer código de convite";
+          }	
+		  	}
+      }
+    }       
+  }else{
+    msg = "É preciso estar logado para entrar em um servidor"; 
+  }
+  
+  return msg;
 }
 
 string Sistema::leave_server() {
-  return "leave_server NÃO IMPLEMENTADO";
+  usuarios[usuarioLogadoId-1].addServer(nullptr);
+	for(auto& s : servidores){
+		for(auto u = s.getParticipantesIDs().begin(); u != s.getParticipantesIDs().end(); ++u){
+			if(usuarios[(*u)-1].getId() == usuarioLogadoId){
+				s.getParticipantesIDs().erase(u);
+				msg = "Saindo do servidor "+s.getNome();
+			}
+		}
+	}
+	msg = "voce nao esta conectado em nenhum servidor";
+  return msg;
 }
 
 string Sistema::list_participants() {
-  return "list_participants NÃO IMPLEMENTADO";
+  string msg_completa = "";
+  if(usuarios[usuarioLogadoId-1].getServer() == nullptr){
+		msg = "Voce nao esta conectado a nenhum servidor";
+	}
+	msg_completa += "lista de participantes";
+	for(auto &p : usuarios[usuarioLogadoId-1].getServer()->getParticipantesIDs()){
+		msg_completa += usuarios[p-1].getNome()+"\n";
+	}
+  msg = msg_completa;
+  return msg;
 }
 
 string Sistema::list_channels() {
