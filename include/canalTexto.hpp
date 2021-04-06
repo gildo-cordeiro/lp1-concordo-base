@@ -14,6 +14,12 @@ class CanalTexto: public Canal{
     public:
         CanalTexto();
         ~CanalTexto();
+
+        void setNome(string nome);
+        void setDesc(string desc);
+
+        string getNome();
+        string getDesc();
 };
 
 #endif

@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <vector>
-#include "canal.hpp"
+#include "canalTexto.hpp"
+#include "canalVoz.hpp"
 
 using namespace std;
 
@@ -13,7 +14,8 @@ class Servidor{
         string nome;
         string descricao;
         string codigoConvite;
-        vector<Canal> canais;
+        vector<CanalTexto> canaisTexo;
+        vector<CanalVoz> canaisVoz;
         vector<int> participantesIDs;
             
     public:
@@ -25,12 +27,14 @@ class Servidor{
         string getNome();
         string getDescricao();
         string getCodigoConvite();
-        vector<Canal> getCanais();
+        vector<CanalTexto> getCanaisTexto();
+        vector<CanalVoz> getCanaisVoz();
         vector<int> getParticipantesIDs();
 
         void setCodigoConvite(string codigo);
         void setDescricao(string desc);
-        void addCanais(vector<Canal> canais);
+        void addCanalTexto(CanalTexto canalTexto);
+        void addCanalVoz(CanalVoz canalVoz);
         void addParticipante(int p);
 };      
 

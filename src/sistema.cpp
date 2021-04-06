@@ -234,27 +234,147 @@ string Sistema::list_participants() {
 }
 
 string Sistema::list_channels() {
-  return "list_channels NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &u: usuarios){
+      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
+        msg += "#CANAIS DE TEXTO\n";
+        for (auto &ct : u.getServer()->getCanaisTexto()){
+          msg += ct.getNome() + (!ct.getDesc().empty() ? ct.getDesc() : "") + "\n"; 
+        }  
+
+        msg += "\n\n";
+
+        msg += "#CANAIS DE VOZ\n";
+        for (auto &cv : u.getServer()->getCanaisVoz()){
+          msg += cv.getNome() + (!cv.getDesc().empty() ? cv.getDesc() : "") + "\n";
+        }
+              
+      }else{
+        msg = "voce nao esta conectado em nenhum servidor";
+      }
+    }
+  }else{
+    msg = "É preciso estar logado para executar esse comando.";
+  }
+
+  return msg;
 }
 
 string Sistema::create_channel(const string nome, const string tipo) {
-  return "create_channel NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    CanalTexto inser_ct;
+    CanalVoz   inser_cv;
+    bool flag = false;
+    
+    for (auto &u: usuarios){
+      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
+        if(tipo == "texto"){
+          for (auto &ct : u.getServer()->getCanaisTexto()){
+            if(ct.getNome() == nome)
+              flag = true;
+          }
+
+          if(!flag){
+            inser_ct.setNome(nome);
+            inser_ct.setDesc("");
+            u.getServer()->addCanalTexto(inser_ct);
+            msg = "Canal de texto "+ nome +" criado";
+          }else{
+            msg = "Canal de texto "+nome+" já existe";
+          }
+
+        }else if(tipo == "voz"){
+          for (auto &cv : u.getServer()->getCanaisVoz()){
+            if(cv.getNome() == nome)
+              flag = true;
+          }
+          
+          if(!flag){
+            inser_ct.setNome(nome);
+            inser_ct.setDesc("");
+            u.getServer()->addCanalVoz(inser_cv);
+            msg = "Canal de voz "+ nome + "criado";
+            
+          }else{
+            msg = "Canal de voz "+nome+" já existe";
+          }
+        
+        }else{
+          msg = "Esse tipo de canal não existe no sistema.";
+        }
+
+      }else{
+        msg = "voce nao esta conectado em nenhum servidor";
+      }
+    }
+  }else{
+    msg = "É preciso estar logado para executar esse comando."; 
+  }
+  return msg;
 }
 
 string Sistema::enter_channel(const string nome) {
-  return "enter_channel NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    bool channel = false;
+    for (auto &u: usuarios){
+      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
+        for (auto &ct : u.getServer()->getCanaisTexto()){
+          if(ct.getNome() == nome)
+            channel = true;
+        }
+
+        if(!channel){
+          for (auto &cv : u.getServer()->getCanaisVoz()){
+            if(cv.getNome() == nome)
+              channel = true;
+          }          
+        }
+
+        channel ? nomeCanalConectado = nome : nomeCanalConectado = "";
+        nomeCanalConectado.empty() ? msg = "Entrou no canal "+ nome : msg = "Canal "+ nome + " não existe";
+                     
+      }else{
+        msg = "voce nao esta conectado em nenhum servidor";
+      }
+    }
+  }else{
+    msg = "É preciso estar logado para executar esse comando."; 
+  }
+  return msg;
 }
 
 string Sistema::leave_channel() {
-  return "leave_channel NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    for (auto &u: usuarios){
+      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
+        nomeCanalConectado.empty() ? msg = "Saindo do canal" : "";
+        nomeCanalConectado = "";
+      }else{
+        msg = "voce nao esta conectado em nenhum servidor";
+      }
+    }
+  }else{
+    msg = "É preciso estar logado para executar esse comando."; 
+  }
+  return msg;
 }
 
 string Sistema::send_message(const string mensagem) {
-  return "send_message NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+    return mensagem;
+  }else{
+    msg = "É preciso estar logado para executar esse comando."; 
+  }
+  return msg;
 }
 
 string Sistema::list_messages() {
-  return "list_messages NÃO IMPLEMENTADO";
+  if(usuarioLogadoId != 0){
+
+  }else{
+    msg = "É preciso estar logado para executar esse comando."; 
+  }
+  return msg;
 }
 
 

@@ -11,6 +11,12 @@ class CanalVoz: public Canal{
     public:
         CanalVoz();
         ~CanalVoz();
+        
+        void setNome(string nome);
+        void setDesc(string desc);
+
+        string getNome();
+        string getDesc();
 };
 
 #endif
