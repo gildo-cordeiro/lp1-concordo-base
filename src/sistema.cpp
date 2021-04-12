@@ -9,7 +9,10 @@ string Sistema::quit() {
   return "Saindo do Concordo";
 }
 
-
+/**
+ * Verifica se o usuario já esxiste no sistema, caso não exista a função ira criar o usuario 
+ * com base nos parametros recebidos.
+ **/
 string Sistema::create_user (const string email, const string senha, const string nome) {
   if(nome != "" && email != "" && senha != ""){
     if(usuarioLogadoId != 0){
@@ -33,6 +36,10 @@ string Sistema::create_user (const string email, const string senha, const strin
   return msg;
 }
 
+/**
+ * Permite um usuario previamente existente logar no sistema, se suas credencias 
+ * forem iguaias as que estão sendo recebidas por parametro.
+ **/
 string Sistema::login(const string email, const string senha) {
   if(email != "" && senha != ""){
     for(auto &usuario: usuarios){
@@ -48,6 +55,9 @@ string Sistema::login(const string email, const string senha) {
   return msg;
 }
 
+/**
+ * desconecta o usuaro logado atualmente
+ **/
 string Sistema::disconnect() {
   if(usuarioLogadoId != 0){
     for (auto &usuario : usuarios){
@@ -56,23 +66,29 @@ string Sistema::disconnect() {
           break;
       }
     }
-    usuarioLogadoId = 0;    
+    //variavel que guarda o id do usuario logado recebe zero indicando que será deslogado  
+    usuarioLogadoId = 0;  
   }else{
     msg = "Não está conectado";
   }
   return msg;
 }
 
+/**
+ * Permite ao usuario logado criar um servidor
+ **/
 string Sistema::create_server(const string nome) {
   if(usuarioLogadoId != 0){
-    for (auto &servidor : servidores){
+    for (auto &servidor : servidores){ // percorre o vetor de servidores
       if(servidor.getNome() == nome)
         msg = "Servidor com esse nome já existe";
     }
 
-    Servidor server(nome, usuarioLogadoId);
-    servidores.push_back(server);
-    msg = "Servidor criado";
+    if(msg != ""){
+      Servidor server(nome, usuarioLogadoId);
+      servidores.push_back(server);
+      msg = "Servidor criado";
+    }
     
   }else{
     msg = "É preciso estar logado para criar um servidor"; 
@@ -80,12 +96,15 @@ string Sistema::create_server(const string nome) {
   return msg;
 }
 
+/**
+ * insere uma decrição em determinado sevidor
+ * */
 string Sistema::set_server_desc(const string nome, const string descricao) {
-  if(usuarioLogadoId != 0){
-    for (auto &s: servidores){
+  if(usuarioLogadoId != 0){ // verifica se o usuario esta logado
+    for (auto &s: servidores){ // percorre a lista de servidores
       if(s.getNome() == nome){
         if(s.getIdUser() == usuarioLogadoId){
-          s.setDescricao(descricao);
+          s.setDescricao(descricao); // muda a descrição do servidor
           msg = "Descrição do servidor '" +s.getNome()+ "' modificada!";
         
         }else{
@@ -101,12 +120,16 @@ string Sistema::set_server_desc(const string nome, const string descricao) {
   return msg;
 }
 
+/**
+ * insere um codigo em determinado sevidor
+ * */
 string Sistema::set_server_invite_code(const string nome, const string codigo) {
   if(usuarioLogadoId != 0){
     for (auto &s: servidores){
       if(s.getNome() == nome){
         if(s.getIdUser() == usuarioLogadoId){
-          s.setCodigoConvite(codigo);
+          s.setCodigoConvite(codigo); // muda o codigo do servidor
+          //if ternario para indicar qual mensagem devera ser retornado ao usuario
           codigo != "" 
             ? msg = "Código de convite do servidor '" +s.getNome()+ "' modificado!"
             : msg = "Código de convite do servidor '" +s.getNome()+ "' removido!";
@@ -124,6 +147,9 @@ string Sistema::set_server_invite_code(const string nome, const string codigo) {
   return msg;
 }
 
+/**
+ * lista todos os servidores
+ * */
 string Sistema::list_servers() {
   string msg_completa = "";
   if(usuarioLogadoId != 0){
@@ -136,7 +162,7 @@ string Sistema::list_servers() {
           "Nome: " + servidor.getNome() + 
           "\nDescrição: " + servidor.getDescricao() + 
           "\nCodigo: " + 
-          servidor.getCodigoConvite() != "" 
+          servidor.getCodigoConvite() != "" // if ternario retornando o status do servidor
               ? "Servidor Fechado" 
               : "Servidor Aberto";
             
@@ -151,15 +177,18 @@ string Sistema::list_servers() {
   return msg;
 }
 
+/**
+ * remove um servidor a partir do nome recebido por parametro
+ * */
 string Sistema::remove_server(const string nome) {
   if(usuarioLogadoId != 0){
     if(servidores.empty())
       msg = "Não há servidores cadastrados";
     else{
-      for(auto s = servidores.begin(); s != servidores.end(); ++s){
+      for(auto s = servidores.begin(); s != servidores.end(); ++s){ //percorre a lsta de servidores 
         if(s->getNome() == nome){
           if(s->getIdUser() == usuarioLogadoId){
-            servidores.erase(s);
+            servidores.erase(s); // remove o servidor da lista
             msg = "Servidor '"+nome+"' removido";
           }else{
             msg = "Você não é o dono do servidor "+nome;
@@ -175,21 +204,24 @@ string Sistema::remove_server(const string nome) {
   return msg;
 }
 
+/**
+ * insere o usuario logado em um servidor de acordo com os parametros
+ * */
 string Sistema::enter_server(const string nome, const string codigo) {
   if(usuarioLogadoId != 0){
     for (auto &s : servidores){
       if(s.getNome() == nome){
-        if(usuarioLogadoId == s.getIdUser()){
+        if(usuarioLogadoId == s.getIdUser()){ // se usuario logado for o dono do servidor é apenas inserido na lista de participantes 
 				  s.addParticipante(usuarioLogadoId);
-				  usuarios[usuarioLogadoId-1].addServer(&s);
+				  usuarios[usuarioLogadoId-1].addServer(&s); // adiciona o servidor no usuario logado, uma vez que ele é o proprietario
 				  msg = "Entrou no servidor com sucesso";
 			  }else {
-          for (auto p : s.getParticipantesIDs()){
+          for (auto p : s.getParticipantesIDs()){ // se ele não é dono verifica-se se o usuario já está no servidor ou não
               if(p == usuarioLogadoId)
                 msg = "Você ja esta neste servidor";
           }
 				
-          if(s.getCodigoConvite() == "" || s.getCodigoConvite() == codigo){
+          if(s.getCodigoConvite() == "" || s.getCodigoConvite() == codigo){ //verificação atraves do codigo de acesso
             s.addParticipante(usuarioLogadoId);
             usuarios[usuarioLogadoId-1].addServer(&s);
             msg = "Entrou no servidor com sucesso";
@@ -206,6 +238,9 @@ string Sistema::enter_server(const string nome, const string codigo) {
   return msg;
 }
 
+/**
+ * retira o usuario logado do servidor
+ * */
 string Sistema::leave_server() {
   usuarios[usuarioLogadoId-1].addServer(nullptr);
 	for(auto& s : servidores){
@@ -220,6 +255,9 @@ string Sistema::leave_server() {
   return msg;
 }
 
+/**
+ * lista todos os participantes do servidor pertencente ao usuario logado
+ * */
 string Sistema::list_participants() {
   string msg_completa = "";
   if(usuarios[usuarioLogadoId-1].getServer() == nullptr){
@@ -233,6 +271,9 @@ string Sistema::list_participants() {
   return msg;
 }
 
+/**
+ * lista todos os participantes dos canais do servidor pertencente ao usuario logado
+ * */
 string Sistema::list_channels() {
   if(usuarioLogadoId != 0){
     if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
@@ -259,6 +300,10 @@ string Sistema::list_channels() {
   return msg;
 }
 
+/**
+ * cria um canal no servidor do usuario logado de acordo com os parametros passados para 
+ * a função
+ * */
 string Sistema::create_channel(const string nome, const string tipo) {
   if(usuarioLogadoId != 0){
     if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
@@ -273,6 +318,9 @@ string Sistema::create_channel(const string nome, const string tipo) {
   return msg;
 }
 
+/**
+ * permite ao usuario logado entrar em um canal do servidor
+ * */
 string Sistema::enter_channel(const string nome) {
   if(usuarioLogadoId != 0){
     if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
@@ -291,6 +339,9 @@ string Sistema::enter_channel(const string nome) {
   return msg;
 }
 
+/**
+ * permite ao usuario logado deixar o canal do servidor
+ * */
 string Sistema::leave_channel() {
   if(usuarioLogadoId != 0){
     if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
@@ -304,6 +355,10 @@ string Sistema::leave_channel() {
   return msg;
 }
 
+/**
+ * permite ao usuario enviar mensagens em um canal do servidor. Essas mesnagens são 
+ * são gravadas para serem listadas depois
+ * */
 string Sistema::send_message(const string mensagem) {
   if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
       if(usuarios[usuarioLogadoId-1].getCanal() != nullptr){        
@@ -330,6 +385,9 @@ string Sistema::send_message(const string mensagem) {
   return msg;
 }
 
+/**
+ * permite ao usuario logado exibir as mensagens enviadas acompanhadas de data e hora
+ * */
 string Sistema::list_messages() {
   if(usuarioLogadoId != 0){
     if(usuarios[usuarioLogadoId-1].getCanal()->getTipo() == "texto"){

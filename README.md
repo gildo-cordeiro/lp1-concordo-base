@@ -16,7 +16,15 @@ Ou pode criar um arquivo de texto com uma lista de comandos (um por linha) e exe
 ```console
 ./concordo < script_comandos.txt
 ```
+
+## Estrutura
+Os arquivos `.cpp`, `.hpp` e `.o` ficam armazenados em src, include e bin, respectivamente. O makefile se encarrega de criar a pasta bin e jogar os compilaveis la dentro e em seguida recuperar essas arquivos e gerar o executavel `main` na estrutura raiz do projeto.
+
 ## Entrada e Saida
+Segue abaixo alguns exemplos de entradas e saidas corretas. O sistema poderá retornar uma saida diferente a depender da entrada informada. 
+
+OBS.: os "<>" indicam um parâmetro `<Nome Sobrenome> = Gildo Cordeiro`
+
 1. `comando create-user`
 ```console
 input: create-user <nome.sobrenome@email.com.br> <senha_qualquer> <Nome Sobrenome>
