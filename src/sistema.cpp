@@ -5,10 +5,10 @@
 
 using namespace std;
 
-/* COMANDOS */
 string Sistema::quit() {
   return "Saindo do Concordo";
 }
+
 
 string Sistema::create_user (const string email, const string senha, const string nome) {
   if(nome != "" && email != "" && senha != ""){
@@ -137,7 +137,7 @@ string Sistema::list_servers() {
           "\nDescrição: " + servidor.getDescricao() + 
           "\nCodigo: " + 
           servidor.getCodigoConvite() != "" 
-              ? "Servidore Fechado" 
+              ? "Servidor Fechado" 
               : "Servidor Aberto";
             
         msg_completa += "\n----------------------------------------\n";
@@ -216,14 +216,14 @@ string Sistema::leave_server() {
 			}
 		}
 	}
-	msg = "voce nao esta conectado em nenhum servidor";
+	msg = "Você não esta conectado em nenhum servidor";
   return msg;
 }
 
 string Sistema::list_participants() {
   string msg_completa = "";
   if(usuarios[usuarioLogadoId-1].getServer() == nullptr){
-		msg = "Voce nao esta conectado a nenhum servidor";
+		msg = "Você não esta conectado a nenhum servidor";
 	}
 	msg_completa += "lista de participantes";
 	for(auto &p : usuarios[usuarioLogadoId-1].getServer()->getParticipantesIDs()){
@@ -250,7 +250,7 @@ string Sistema::list_channels() {
           msg += cv.getNome() + "\n";          
       }
     }else{
-      msg = "voce não esta conectado em nenhum servidor";
+      msg = "Você não esta conectado em nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando.";
@@ -265,7 +265,7 @@ string Sistema::create_channel(const string nome, const string tipo) {
       Canal c(nome, tipo);
       usuarios[usuarioLogadoId-1].getServer()->addCanal(c);
     }else{
-      msg = "Voce não esta conectado a nenhum servidor";
+      msg = "Você não esta conectado a nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
@@ -283,7 +283,7 @@ string Sistema::enter_channel(const string nome) {
         }
       }
     }else{
-      msg = "Voce não esta conectado a nenhum servidor";
+      msg = "Você não esta conectado a nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
@@ -322,10 +322,10 @@ string Sistema::send_message(const string mensagem) {
           canal->getMensagens().emplace_back(texto);
         }
       }else{
-        msg = "Voce nao esta conectado a nenhum canal";
+        msg = "Você não esta conectado a nenhum canal";
       }
   }else{
-    msg = "Voce nao esta conectado a nenhum servidor";
+    msg = "Você não esta conectado a nenhum servidor";
   }
   return msg;
 }
@@ -336,10 +336,10 @@ string Sistema::list_messages() {
       CanalTexto *canal = dynamic_cast <CanalTexto*>(usuarios[usuarioLogadoId-1].getCanal());
       if(canal != nullptr){
         for(auto &mensagem : canal->getMensagens()){
-          msg += usuarios[mensagem.getIdUser()].getNome() + "[" + mensagem.getDataHora() + "]: " + mensagem.getConteudo() + "\n";
+          msg += usuarios[mensagem.getIdUsuario()].getNome() + "[" + mensagem.getDataHora() + "]: " + mensagem.getConteudo() + "\n";
         }
       }else{
-        msg = "";
+        msg = "Você não possui canal de texto.";
       }
     }
   }else{

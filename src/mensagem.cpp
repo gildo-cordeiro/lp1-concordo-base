@@ -4,8 +4,8 @@ Mensagem::Mensagem(){}
 
 Mensagem::~Mensagem(){}
 
-Mensagem::Mensagem(const string& dataHora, const string& conteudo, int idUser)
-:dataHora(dataHora),conteudo(conteudo),idUser(idUser){}
+Mensagem::Mensagem(const string& dataHora, const string& conteudo, int idUsuario)
+:dataHora(dataHora),conteudo(conteudo),idUsuario(idUsuario){}
 
 string Mensagem::getDataHora(){
     return dataHora;
@@ -13,4 +13,8 @@ string Mensagem::getDataHora(){
 
 string Mensagem::getConteudo(){
     return conteudo;
+}
+
+int Mensagem::getIdUsuario(){
+    return this->idUsuario;
 }

@@ -8,13 +8,13 @@ class Mensagem{
    private:
         string dataHora;
         string conteudo;
-        int idUser;
+        int idUsuario;
 
     public:
         Mensagem();
         string getDataHora();
         string getConteudo();
-        int getIdUser();
+        int getIdUsuario();
         Mensagem(const string &dataHora, const string &conteudo, int idUser);
         ~Mensagem();
 

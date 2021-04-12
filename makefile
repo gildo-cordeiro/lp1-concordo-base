@@ -7,7 +7,7 @@
 FILE=main
 
 COMPILER=g++
-COMPILATION_FLAGS=-Wall -Wextra -pedantic #-g -DDEBUG
+COMPILATION_FLAGS=-Wall -Wextra -pedantic -fsanitize=address -g #-DDEBUG
 LINKER_FLAGS=
 
 MAINFILE=concordo
