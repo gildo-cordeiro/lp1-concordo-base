@@ -235,23 +235,22 @@ string Sistema::list_participants() {
 
 string Sistema::list_channels() {
   if(usuarioLogadoId != 0){
-    for (auto &u: usuarios){
-      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
-        msg += "#CANAIS DE TEXTO\n";
-        for (auto &ct : u.getServer()->getCanaisTexto()){
-          msg += ct.getNome() + (!ct.getDesc().empty() ? ct.getDesc() : "") + "\n"; 
-        }  
+    if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
+      msg = "#CANAIS DE TEXTO\n";
+      for (auto &ct : usuarios[usuarioLogadoId-1].getServer()->getCanais()){
+        if(ct.getTipo() == "texto")
+          msg += ct.getNome() + "\n"; 
+      }  
 
-        msg += "\n\n";
+      msg += "\n\n";
 
-        msg += "#CANAIS DE VOZ\n";
-        for (auto &cv : u.getServer()->getCanaisVoz()){
-          msg += cv.getNome() + (!cv.getDesc().empty() ? cv.getDesc() : "") + "\n";
-        }
-              
-      }else{
-        msg = "voce nao esta conectado em nenhum servidor";
+      msg += "#CANAIS DE VOZ\n";
+      for (auto &cv : usuarios[usuarioLogadoId-1].getServer()->getCanais()){
+        if(cv.getTipo() == "voz")
+          msg += cv.getNome() + "\n";          
       }
+    }else{
+      msg = "voce não esta conectado em nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando.";
@@ -262,50 +261,11 @@ string Sistema::list_channels() {
 
 string Sistema::create_channel(const string nome, const string tipo) {
   if(usuarioLogadoId != 0){
-    CanalTexto inser_ct;
-    CanalVoz   inser_cv;
-    bool flag = false;
-    
-    for (auto &u: usuarios){
-      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
-        if(tipo == "texto"){
-          for (auto &ct : u.getServer()->getCanaisTexto()){
-            if(ct.getNome() == nome)
-              flag = true;
-          }
-
-          if(!flag){
-            inser_ct.setNome(nome);
-            inser_ct.setDesc("");
-            u.getServer()->addCanalTexto(inser_ct);
-            msg = "Canal de texto "+ nome +" criado";
-          }else{
-            msg = "Canal de texto "+nome+" já existe";
-          }
-
-        }else if(tipo == "voz"){
-          for (auto &cv : u.getServer()->getCanaisVoz()){
-            if(cv.getNome() == nome)
-              flag = true;
-          }
-          
-          if(!flag){
-            inser_ct.setNome(nome);
-            inser_ct.setDesc("");
-            u.getServer()->addCanalVoz(inser_cv);
-            msg = "Canal de voz "+ nome + "criado";
-            
-          }else{
-            msg = "Canal de voz "+nome+" já existe";
-          }
-        
-        }else{
-          msg = "Esse tipo de canal não existe no sistema.";
-        }
-
-      }else{
-        msg = "voce nao esta conectado em nenhum servidor";
-      }
+    if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
+      Canal c(nome, tipo);
+      usuarios[usuarioLogadoId-1].getServer()->addCanal(c);
+    }else{
+      msg = "Voce não esta conectado a nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
@@ -315,27 +275,15 @@ string Sistema::create_channel(const string nome, const string tipo) {
 
 string Sistema::enter_channel(const string nome) {
   if(usuarioLogadoId != 0){
-    bool channel = false;
-    for (auto &u: usuarios){
-      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
-        for (auto &ct : u.getServer()->getCanaisTexto()){
-          if(ct.getNome() == nome)
-            channel = true;
+    if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
+      for(auto& canal : usuarios[usuarioLogadoId-1].getServer()->getCanais()){
+        if(canal.getNome() == nome){
+          usuarios[usuarioLogadoId-1].addCanal(&canal);
+          msg = "Entrou no canal "+nome;
         }
-
-        if(!channel){
-          for (auto &cv : u.getServer()->getCanaisVoz()){
-            if(cv.getNome() == nome)
-              channel = true;
-          }          
-        }
-
-        channel ? nomeCanalConectado = nome : nomeCanalConectado = "";
-        nomeCanalConectado.empty() ? msg = "Entrou no canal "+ nome : msg = "Canal "+ nome + " não existe";
-                     
-      }else{
-        msg = "voce nao esta conectado em nenhum servidor";
       }
+    }else{
+      msg = "Voce não esta conectado a nenhum servidor";
     }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
@@ -345,13 +293,10 @@ string Sistema::enter_channel(const string nome) {
 
 string Sistema::leave_channel() {
   if(usuarioLogadoId != 0){
-    for (auto &u: usuarios){
-      if(u.getId() == usuarioLogadoId && u.getServer() != nullptr){
-        nomeCanalConectado.empty() ? msg = "Saindo do canal" : "";
-        nomeCanalConectado = "";
-      }else{
-        msg = "voce nao esta conectado em nenhum servidor";
-      }
+    if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
+      usuarios[usuarioLogadoId-1].getServer()->addCanal(*(new Canal()));
+    }else{
+      msg = "É preciso estar logado para executar esse comando."; 
     }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
@@ -360,24 +305,45 @@ string Sistema::leave_channel() {
 }
 
 string Sistema::send_message(const string mensagem) {
-  if(usuarioLogadoId != 0){
-    return mensagem;
+  if(usuarios[usuarioLogadoId-1].getServer() != nullptr){
+      if(usuarios[usuarioLogadoId-1].getCanal() != nullptr){        
+        if(usuarios[usuarioLogadoId-1].getCanal()->getTipo() == "texto"){
+          time_t data_t;
+          time(&data_t);
+
+          struct tm *t = localtime(&data_t);
+          struct tm *d = localtime(&data_t);
+
+          string dataHora(to_string(d->tm_mday) + "/" + to_string(d->tm_mon + 1) + "/" + to_string(d->tm_year + 1900) + " - " + to_string(t->tm_hour)
+          + ":" + to_string(t->tm_min));
+
+          Mensagem texto(dataHora, mensagem, usuarioLogadoId);
+          CanalTexto *canal = dynamic_cast <CanalTexto*>(usuarios[usuarioLogadoId-1].getCanal());
+          canal->getMensagens().emplace_back(texto);
+        }
+      }else{
+        msg = "Voce nao esta conectado a nenhum canal";
+      }
   }else{
-    msg = "É preciso estar logado para executar esse comando."; 
+    msg = "Voce nao esta conectado a nenhum servidor";
   }
   return msg;
 }
 
 string Sistema::list_messages() {
   if(usuarioLogadoId != 0){
-
+    if(usuarios[usuarioLogadoId-1].getCanal()->getTipo() == "texto"){
+      CanalTexto *canal = dynamic_cast <CanalTexto*>(usuarios[usuarioLogadoId-1].getCanal());
+      if(canal != nullptr){
+        for(auto &mensagem : canal->getMensagens()){
+          msg += usuarios[mensagem.getIdUser()].getNome() + "[" + mensagem.getDataHora() + "]: " + mensagem.getConteudo() + "\n";
+        }
+      }else{
+        msg = "";
+      }
+    }
   }else{
     msg = "É preciso estar logado para executar esse comando."; 
   }
   return msg;
 }
-
-
-
-
-/* IMPLEMENTAR MÉTODOS PARA OS COMANDOS RESTANTES */

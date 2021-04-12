@@ -12,6 +12,7 @@ class Usuario{
         string email;
         string senha;
         Servidor *servidor = nullptr;
+        Canal *canal = nullptr;
         bool ativo;
 
     public:
@@ -22,10 +23,14 @@ class Usuario{
         string getNome();
         string getEmail();
         string getSenha();
-        void addServer(Servidor *s);
+        Canal *getCanal();
         Servidor* getServer();
+
+        void addCanal(Canal* canal);
+        void addServer(Servidor *s);
         void setAtivo(bool ativo);
         bool getAtivo();
+
         int getId();
 };
 

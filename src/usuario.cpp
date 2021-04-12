@@ -42,3 +42,11 @@ void Usuario::addServer(Servidor* servidor){
 Servidor* Usuario::getServer(){
     return servidor;
 }
+
+void Usuario::addCanal(Canal* canal){
+    this->canal = canal;
+}
+
+Canal* Usuario::getCanal(){
+    return canal;
+}

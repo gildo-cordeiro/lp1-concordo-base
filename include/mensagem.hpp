@@ -5,14 +5,19 @@
 using namespace std;
 
 class Mensagem{
-    private:
+   private:
         string dataHora;
         string conteudo;
         int idUser;
 
     public:
         Mensagem();
+        string getDataHora();
+        string getConteudo();
+        int getIdUser();
+        Mensagem(const string &dataHora, const string &conteudo, int idUser);
         ~Mensagem();
+
 };
 
 

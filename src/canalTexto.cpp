@@ -2,20 +2,10 @@
 
 CanalTexto::CanalTexto(){}
 
+CanalTexto::CanalTexto(const string& nome, const string& tipo):Canal(nome,tipo){}
+
 CanalTexto::~CanalTexto(){}
 
-void CanalTexto::setNome(string nome){
-    this->setNome(nome);
-}
-
-void CanalTexto::setDesc(string desc){
-    this->setDesc(desc);
-}
-
-string CanalTexto::getNome(){
-    return this->getNome();
-}
-
-string CanalTexto::getDesc(){
-    return this->getDesc();
+vector<Mensagem>& CanalTexto::getMensagens(){
+    return mensagens;
 }

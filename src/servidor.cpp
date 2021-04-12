@@ -25,12 +25,8 @@ string Servidor::getCodigoConvite(){
     return this->codigoConvite;
 }
 
-vector<CanalTexto> Servidor::getCanaisTexto(){
-    return this->canaisTexo;
-}
-
-vector<CanalVoz> Servidor::getCanaisVoz(){
-    return this->canaisVoz;
+vector<Canal>& Servidor::getCanais(){
+    return this->canais;
 }
 
 vector<int> Servidor::getParticipantesIDs(){
@@ -45,14 +41,9 @@ void Servidor::setDescricao(string desc){
     this->descricao = desc;
 }
 
-void Servidor::addCanalTexto(CanalTexto ct){
-    this->canaisTexo.push_back(ct);   
+void Servidor::addCanal(Canal c){
+    this->canais.push_back(c);   
 }
-
-void Servidor::addCanalVoz(CanalVoz cv){
-    this->canaisVoz.push_back(cv);   
-}
-
 
 void Servidor::addParticipante(int p){
     this->participantesIDs.push_back(p);  

@@ -14,8 +14,7 @@ class Servidor{
         string nome;
         string descricao;
         string codigoConvite;
-        vector<CanalTexto> canaisTexo;
-        vector<CanalVoz> canaisVoz;
+        vector<Canal> canais;
         vector<int> participantesIDs;
             
     public:
@@ -27,14 +26,12 @@ class Servidor{
         string getNome();
         string getDescricao();
         string getCodigoConvite();
-        vector<CanalTexto> getCanaisTexto();
-        vector<CanalVoz> getCanaisVoz();
+        vector<Canal>& getCanais();
         vector<int> getParticipantesIDs();
 
         void setCodigoConvite(string codigo);
         void setDescricao(string desc);
-        void addCanalTexto(CanalTexto canalTexto);
-        void addCanalVoz(CanalVoz canalVoz);
+        void addCanal(Canal canal);
         void addParticipante(int p);
 };      
 

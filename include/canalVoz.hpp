@@ -7,16 +7,13 @@
 class CanalVoz: public Canal{
     private:
         Mensagem ultimaMensagem;
-        
+
     public:
         CanalVoz();
+        CanalVoz(const string& nome, const string& tipo);
         ~CanalVoz();
-        
-        void setNome(string nome);
-        void setDesc(string desc);
-
-        string getNome();
-        string getDesc();
 };
+
+
 
 #endif
