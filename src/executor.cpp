@@ -32,6 +32,9 @@ Executor::Executor(Sistema &sistema) {
 void Executor::iniciar(istream &inputStream, ostream &outputStream) {
   string linha, saida;
   this->sair = false;
+
+  this->sistema->carragar();
+
   while (! this->sair)
   {
     if (std::getline(inputStream, linha)) {

@@ -40,6 +40,12 @@ class Sistema {
   string leave_channel();
   string send_message(const string mensagem);
   string list_messages();
+  void salvar_usuarios();
+  void salvar_servidores();
+  void carregar_usuarios();
+  void carregar_servidores();
+  void carragar();
+  void salvar();
 };
 
 #endif

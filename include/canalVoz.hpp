@@ -11,6 +11,8 @@ class CanalVoz: public Canal{
     public:
         CanalVoz();
         CanalVoz(const string& nome, const string& tipo);
+        Mensagem &getUltimaMensagem();
+        void setUltimaMensagem(Mensagem msg);
         ~CanalVoz();
 };
 
