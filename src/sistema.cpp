@@ -568,7 +568,7 @@ void Sistema::carregar_servidores() {
 
     getline(servidor_texto, linha);
 
-    int size, user_id, total_particiapantes, participante_id, total_canais, total_mensagens, userId;
+    int size, user_id, total_part, participante_id, total_canais, total_mensagens, userId;
 
     stringstream sizeStringStream;  
     sizeStringStream << linha;  
@@ -577,9 +577,9 @@ void Sistema::carregar_servidores() {
     if(size > 0) {
       for(int i = 0; i < size; i++) {
         getline(servidor_texto, linha);
-        stringstream user_idStringStream;  
-        user_idStringStream << linha;  
-        user_idStringStream >> user_id;
+        stringstream user_input_stram;  
+        user_input_stram << linha;  
+        user_input_stram >> user_id;
         getline(servidor_texto, linha);
         string servidor_nome = linha;
         getline(servidor_texto, linha);
@@ -592,25 +592,25 @@ void Sistema::carregar_servidores() {
         server.setCodigoConvite(servidor_codigo);
 
         getline(servidor_texto, linha);
-        stringstream total_particiapantes_stringStream; 
-        total_particiapantes_stringStream << linha;  
-        total_particiapantes_stringStream >> total_particiapantes;
+        stringstream total_pat_stream; 
+        total_pat_stream << linha;  
+        total_pat_stream >> total_part;
 
-        if (total_particiapantes > 0) {
-          for (int i = 0; i < total_particiapantes; i++) {
+        if (total_part > 0) {
+          for (int i = 0; i < total_part; i++) {
             getline(servidor_texto, linha);
-            stringstream participante_id_StringStream; 
-            participante_id_StringStream << linha;  
-            participante_id_StringStream >> participante_id;
+            stringstream part_stream; 
+            part_stream << linha;  
+            part_stream >> participante_id;
 
             server.addParticipante(participante_id);
           }
         }
 
         getline(servidor_texto, linha);
-        stringstream total_canais_StringStream; 
-        total_canais_StringStream << linha;  
-        total_canais_StringStream >> total_canais;
+        stringstream tot_canal_stream; 
+        tot_canal_stream << linha;  
+        tot_canal_stream >> total_canais;
 
         if (total_canais > 0) {
           for (int i = 0; i < total_canais; i++) {
@@ -623,15 +623,15 @@ void Sistema::carregar_servidores() {
             server.addCanal(novo_canal);
 
             getline(servidor_texto, linha);
-            stringstream total_mensagens_StringStream; 
-            total_mensagens_StringStream << linha;  
-            total_mensagens_StringStream >> total_mensagens;
+            stringstream tot_msg_stream; 
+            tot_msg_stream << linha;  
+            tot_msg_stream >> total_mensagens;
 
             for (int j = 0; j < total_mensagens; j++) {
               getline(servidor_texto, linha);
-              stringstream user_id_StringStream; 
-              user_id_StringStream << linha;  
-              user_id_StringStream >> userId;
+              stringstream user_stream; 
+              user_stream << linha;  
+              user_stream >> userId;
               getline(servidor_texto, linha);
               string dataHora = linha;
               getline(servidor_texto, linha);
